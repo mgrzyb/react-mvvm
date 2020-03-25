@@ -17,10 +17,7 @@ export class UserListPage extends Page<NewUserDialog> {
     userGroups : Deferred<UserGroupDto[]> = "Loading";
     
     @observable
-    filter : {
-        nameLike: string,
-        userGroup: UserGroupDto | undefined
-    } = { 
+    filter = { 
         nameLike: "",
         userGroup: undefined
     };

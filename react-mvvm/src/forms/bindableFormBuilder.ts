@@ -67,7 +67,7 @@ export class BindableFormBuilder<T, S = {}> {
         return new BindableFormBuilder(this.fieldDefinitions as any, this.metadata);
     }
 
-    bindTo(dtoAccessor : () => T): BindableForm<T, S> {
+    bindTo(dtoAccessor : () => Partial<T>): BindableForm<T, S> {
         return new BindableForm<T, S>(this.fieldDefinitions, dtoAccessor);
     }
 }

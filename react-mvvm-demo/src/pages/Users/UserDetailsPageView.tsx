@@ -2,9 +2,6 @@ import * as React from "react";
 import { observer } from "mobx-react";
 import { bindToCommand } from "react-mvvm";
 import { UserDetailsPage } from "./UserDetailsPage";
-import { TextInput } from "../../components/TextIput";
-import { DropDown } from "../../components/DropDown";
-import { Form, Input } from "antd";
 import { AntField, AntForm } from "../../components/AntForm";
 import { AntTextInput } from "../../components/AntTextInput";
 import { AntSelect } from "../../components/AntSelect";
@@ -27,10 +24,9 @@ export const UserDetailsPageView = observer(({ model : { state } } : { model : U
         case "NotFound":
             return <div>Not found</div>
         default:
-            let fields = state.userForm.fields;
             return <div>
                 <AntForm form={state.userForm} {...formItemLayout}>
-                {(_) => (
+                {(fields) => (
                     <>
                         <AntField field={fields.firstName} label="First name">
                             { props => <AntTextInput {...props} /> }

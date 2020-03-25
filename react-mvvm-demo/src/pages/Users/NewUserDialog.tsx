@@ -16,14 +16,13 @@ export class NewUserDialog {
     userForm = bindableForm<UserDto>(userDtoMetadata)
         .addAllFields("id", "departmentId")
         .addLookupField("departmentId", () => this.departments, "department")
-        .bindTo(() => this.user as UserDto);
+        .bindTo(() => this.user);
 
     save = asyncCommand(
         async () => {
-            if (!await this.userForm.validate())
-                return;
-            this.userForm.commit();
-            this.close(await createUser(this.user as UserDto));
+            if (await this.userForm.validateAndCommit()) {
+                this.close(await createUser(this.user as UserDto));
+            }
         },
         () => !this.userForm.isPristine);
     

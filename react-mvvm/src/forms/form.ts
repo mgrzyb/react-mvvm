@@ -8,7 +8,9 @@ export class Form<TSchema = any> {
     @computed get isPristine() {
         return this.getFields().every(f => f.isPristine);
     }
-    
+
+    get isDirty() { return !this.isPristine; }
+
     @computed get state() {
         return this.getFields().reduce((s, f) => { switch (f.state) {
             case FormState.Pending:
