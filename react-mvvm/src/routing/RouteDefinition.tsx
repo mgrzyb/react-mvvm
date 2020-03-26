@@ -1,4 +1,4 @@
-import pathToRegexp, { Key as PathToRegexpKey, PathFunction } from "path-to-regexp";
+import { compile, Key as PathToRegexpKey, PathFunction, pathToRegexp } from "path-to-regexp";
 import { IRoutedPage, IRoute } from "./index";
 import { IParentRoute } from "./IParentRoute";
 import { RouteBinding } from "./RouteBinding";
@@ -14,7 +14,7 @@ export abstract class RouteDefinitionBase<TModel extends IRoutedPage, TParentPar
     protected constructor(private stateAccessor?: { get: (page: TModel) => string, set: (page: TModel, state: string) => void }) {
     }
 
-    addRoute<TNewModel extends IRoutedPage, TNewParams>(path: string, modelConstructor: ConstructorOf<TNewModel>, modelFactory: (currentModel: TModel, params: TNewParams) => Promise<TNewModel> | TNewModel, paramsSelector: (page: TNewModel) => TNewParams, stateAccessor?: { get: (page: TNewModel) => string, set: (page: TNewModel, state: string) => void }): RouteDefinition<TModel, TNewModel, TParentParams & TParams, TNewParams> {
+    addRoute<TNewModel extends IRoutedPage, TNewParams>(path: string, modelConstructor: ConstructorOf<TNewModel>, modelFactory: (currentModel: TModel, params: TNewParams) => Promise<TNewModel> | TNewModel, paramsSelector?: (page: TNewModel) => TNewParams, stateAccessor?: { get: (page: TNewModel) => string, set: (page: TNewModel, state: string) => void }): RouteDefinition<TModel, TNewModel, TParentParams & TParams, TNewParams> {
         const route = new RouteDefinition<TModel, TNewModel, TParentParams & TParams, TNewParams>(this, path, modelConstructor, modelFactory, paramsSelector, stateAccessor);
         this.children.push(route);
         return route;
@@ -55,16 +55,16 @@ export class RouteDefinition<TParentModel extends IRoutedPage, TModel extends IR
     readonly pathRegExpKeys: PathToRegexpKey[] = [];
     readonly pathFactory: PathFunction<any>;
 
-    constructor(public readonly parentRoute: IParentRoute<TParentParams>, public path: string, private modelConstructor: ConstructorOf<TModel>, private modelFactory: (parent: TParentModel, params: TParams) => (Promise<TModel> | TModel), private paramsSelector: (model: TModel) => TParams, stateAccessor?: { get: (page: TModel) => string; set: (page: TModel, state: string) => void } | undefined) {
+    constructor(public readonly parentRoute: IParentRoute<TParentParams>, public path: string, private modelConstructor: ConstructorOf<TModel>, private modelFactory: (parent: TParentModel, params: TParams) => (Promise<TModel> | TModel), private paramsSelector?: (model: TModel) => TParams, stateAccessor?: { get: (page: TModel) => string; set: (page: TModel, state: string) => void } | undefined) {
         super(stateAccessor);
         this.pathRegExp = pathToRegexp(path, this.pathRegExpKeys, { end: false });
-        this.pathFactory = pathToRegexp.compile(path);
+        this.pathFactory = compile(path);
     }
-    
+
     getPath(params: TParentParams & TParams) {
         return this.parentRoute.getPath(params) + this.pathFactory(params);
     }
-    
+
     matchPath(path: string): {
         path: string;
         remainingPath: string;
@@ -100,12 +100,12 @@ export class RouteDefinition<TParentModel extends IRoutedPage, TModel extends IR
     bindToModel(updateLocation: () => void, model: IRoutedPage) {
         if (model.constructor !== this.modelConstructor)
             return;
-        
+
         let childBinding: IRouteBinding | undefined;
         if (model.childPage) {
             childBinding = this.bindFirstMatchingChildToModel(updateLocation, model.childPage);
-        } 
-        
-        return new RouteBinding(updateLocation, this, this.pathFactory(this.paramsSelector(model as TModel)), model, childBinding);
+        }
+
+        return new RouteBinding(updateLocation, this, this.pathFactory(this.paramsSelector?.(model as TModel) ?? {}), model, childBinding);
     }
 }

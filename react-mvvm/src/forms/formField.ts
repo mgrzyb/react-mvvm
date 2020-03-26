@@ -27,6 +27,10 @@ export class FormField<T> implements IFormField {
         return this.areEqual(this.value, this._pristineValue);
     }
 
+    get isDirty() {
+        return !this.isPristine;
+    }
+    
     @computed get state(): FormState {
         if (this._isPendingValidation)
             return FormState.Pending;

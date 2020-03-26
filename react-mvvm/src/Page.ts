@@ -36,6 +36,7 @@ export abstract class Page<TDialog = never> implements IPage {
         if (this._childPage && this.isActive)
             await this._childPage.deactivate();
         this._childPage = undefined;
+        await this.onChildPageDeactivated();
     }
 
     async showChildPage<T extends IPage>(newPage: T) {
@@ -61,5 +62,9 @@ export abstract class Page<TDialog = never> implements IPage {
     }
 
     protected async onDeactivated() {
+    }
+
+    protected async onChildPageDeactivated() {
+        
     }
 }
