@@ -7,23 +7,11 @@ export * from "./dialogs";
 export * from "./ContentView";
 export * from "./Page";
 export * from "./navigation";
+export * from "./lists";
 
 export interface IProperty<T> {
   get: () => T;
   set: (v: T) => void;
-}
-
-export function predicates(...predicates: (() => boolean)[]) {
-  return () => predicates.every(p => p());
-}
-
-export function required(get: () => string) {
-  return () => !!get();
-}
-
-export function email(get: () => string) {
-  const re = /\S+@\S+\.\S+/;
-  return () => !!get() && re.test(get());
 }
 
 export function property<T, K extends keyof T>(model: T, propertyName: K) {
@@ -56,10 +44,10 @@ export function bindToApi<T>(
   p: IProperty<Deferred<T>>,
   api: () => Promise<T>,
   delay?: number
-): void {
+) {
   let reqId = 0;
 
-  autorun(
+  return autorun(
     async () => {
       reqId++;
       const currentReqId = reqId;

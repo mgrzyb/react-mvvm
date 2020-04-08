@@ -4,7 +4,7 @@ import React from "react";
 import { AntModal } from "../../components/AntModal";
 import { AntField, AntForm } from "../../components/AntForm";
 import { AntTextInput } from "../../components/AntTextInput";
-import { AntSelect } from "../../components/AntSelect";
+import { AntSingleSelect } from "../../components/AntSelect";
 
 export const NewUserDialogView = observer(({ dialog } : { dialog : NewUserDialog}) => (
     <AntModal title="New user" okCommand={dialog.save} cancel={dialog.cancel}>
@@ -18,7 +18,7 @@ export const NewUserDialogView = observer(({ dialog } : { dialog : NewUserDialog
                         {(props) => <AntTextInput {...props} />}
                     </AntField>
                     <AntField field={fields.department} label="Department">
-                        { props => <AntSelect {...props} dataSource={dialog.departments} optionText={d => d.name}/> }
+                        { props => <AntSingleSelect {...props} dataSource={dialog.departments} optionText={d => d.name}/> }
                     </AntField>
                 </>)
             }

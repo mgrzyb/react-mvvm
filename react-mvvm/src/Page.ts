@@ -50,7 +50,7 @@ export abstract class Page<TDialog = never> implements IPage {
     }
 
     async showModal<TResult>(createDialog : (close : (result : TResult) => void) => TDialog) {
-        return new Promise(r => {
+        return new Promise<TResult>(r => {
             this.dialog = createDialog(result => {
                 this.dialog = undefined;
                 r(result);

@@ -1,34 +1,33 @@
-import { observable } from "mobx";
+import { observable, reaction, runInAction } from "mobx";
 import { asyncCommand, bindTo, bindToApi, ContentView, Deferred, isLoaded, Page, property } from "react-mvvm";
 import { UserDetailsPage } from "./UserDetailsPage";
 import * as React from "react";
-import { observer } from "mobx-react";
-import { TextInput } from "../../components/TextIput";
-import { DropDown } from "../../components/DropDown";
-import { getUserGroupList, getUserList, UserGroupDto } from "../../api";
+import { getUserGroupList, getUserList, UserDto, UserGroupDto, UserListItemDto } from "../../api";
 import { NewUserDialog } from "./NewUserDialog";
+import { PaginatedList } from "react-mvvm";
 
 export class UserListPage extends Page<NewUserDialog> {
-
-    @observable.ref
-    users: Deferred<any[]> = "Loading";
     
     @observable.ref
     userGroups : Deferred<UserGroupDto[]> = "Loading";
     
     @observable
-    filter = { 
-        nameLike: "",
+    filter : { nameLike : string, userGroup : UserGroupDto | undefined } = { 
+        nameLike: "a",
         userGroup: undefined
     };
     
     newUser = asyncCommand(async () => {
-        await this.showModal(close => new NewUserDialog(close));
+        const newUser = await this.showModal<UserDto | undefined>(close => new NewUserDialog(close));
+        if (newUser) {
+            this.users.prependNewItem({ ...newUser, id: newUser.id! });
+        }
     });
+
+    users = new PaginatedList(o => getUserList(this.filter.nameLike + this.filter.userGroup?.name, o));
     
     constructor() {
         super();
-        bindToApi(property(this, "users"), () => getUserList(this.filter), 500);
         bindToApi(property(this, "userGroups"), () => getUserGroupList());
     }
     
@@ -36,4 +35,3 @@ export class UserListPage extends Page<NewUserDialog> {
         return this.showChildPage(new UserDetailsPage(userId));
     }
 }
-

@@ -14,8 +14,8 @@ export class NewUserDialog {
     }
 
     userForm = bindableForm<UserDto>(userDtoMetadata)
-        .addAllFields("id", "departmentId")
-        .addLookupField("departmentId", () => this.departments, "department")
+        .addAllFieldsExcept("id", "departmentId")
+        .addLookupField("departmentId", () => this.departments, { fieldName: "department" })
         .bindTo(() => this.user);
 
     save = asyncCommand(

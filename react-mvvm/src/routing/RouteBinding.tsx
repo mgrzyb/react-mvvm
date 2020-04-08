@@ -37,7 +37,7 @@ export class RouteBinding<TModel extends IRoutedPage> implements IRouteBinding {
             const childLocation = this.nextBinding.getLocation();
             return { path: this.path + childLocation.path, hash: childLocation.hash };
         }
-        return { path: this.path, hash: this.route.getModelState(this.model) || "" };
+        return { path: this.path, hash: this.route.getModelState(this.model) };
     }
 
     destroy() {

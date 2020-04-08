@@ -51,7 +51,7 @@ export class FormField<T> implements IFormField {
     @observable.ref private _currentValidation : Promise<readonly string[] | true> | undefined;
     private _needsValidation: boolean = false;
     
-    constructor(value: T | undefined, private validator : IFormFieldValidator<T>, private comparer? : (a : T, b : T) => boolean) {
+    constructor(value: T | undefined, private validator : FormFieldValidator<T>, private comparer? : (a : T, b : T) => boolean) {
         this.value = value;
         this._pristineValue = value;
         
@@ -97,7 +97,7 @@ export class FormField<T> implements IFormField {
         try {
             do {
                 this._needsValidation = false;
-                const result = await this.validator.validate(this.value);
+                const result = await this.validator(this.value);
                 if (result !== true) {
                     this._errors = result;
                     return result;
@@ -123,21 +123,25 @@ export class FormField<T> implements IFormField {
     }
 }
 
-export interface IFormFieldValidator<T> {
-    validate(value : T | undefined) : Promise<true | string[]>;
+export type FormFieldValidator<T> = <T>(value : T | undefined) => (true | string[]) | PromiseLike<true | string[]>;
+
+
+export const NullValidator = (value : any) : true => true;
+
+function isEmpty(value : {} | string | number | undefined | null) {
+    if (!value)
+        return true;
+    
+    if (Array.isArray(value))
+        return value.length === 0;
+    
+    return value.toString().length === 0
 }
 
-export const NullValidator = {
-    async validate(value: any | undefined): Promise<true | string[]> {
+export function RequiredFieldValidator(value: any | undefined) : true | string[] {
+    if (!isEmpty(value)) {
         return true;
-    }
-};
-export class RequiredFieldValidator implements IFormFieldValidator<any>{
-    async validate(value: any | undefined): Promise<true | string[]> {
-        if (value && value.toString().length > 0) {
-            return true;
-        } else {
-            return ["Field is required"];
-        }
+    } else {
+        return ["Field is required"];
     }
 }

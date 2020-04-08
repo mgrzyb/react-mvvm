@@ -4,7 +4,9 @@ import { bindToCommand } from "react-mvvm";
 import { UserDetailsPage } from "./UserDetailsPage";
 import { AntField, AntForm } from "../../components/AntForm";
 import { AntTextInput } from "../../components/AntTextInput";
-import { AntSelect } from "../../components/AntSelect";
+import { AntSingleSelect } from "../../components/AntSelect";
+import { AntMultiSelect } from "../../components/AntSelect";
+import { Button, PageHeader } from "antd";
 
 const formItemLayout = {
     labelCol: {
@@ -24,10 +26,10 @@ export const UserDetailsPageView = observer(({ model : { state } } : { model : U
         case "NotFound":
             return <div>Not found</div>
         default:
-            return <div>
+            return <PageHeader title={`${state.user.firstName} ${state.user.lastName}`}>
                 <AntForm form={state.userForm} {...formItemLayout}>
                 {(fields) => (
-                    <>
+                    <fieldset disabled={state.save.isRunning} >
                         <AntField field={fields.firstName} label="First name">
                             { props => <AntTextInput {...props} /> }
                         </AntField>
@@ -35,13 +37,16 @@ export const UserDetailsPageView = observer(({ model : { state } } : { model : U
                             {(props) => <AntTextInput {...props} />}
                         </AntField>
                         <AntField field={fields.department} label="Department">
-                            { props => <AntSelect {...props} dataSource={state.departments} optionText={d => d.name}/> }
+                            { props => <AntSingleSelect {...props} dataSource={state.departments} optionText={d => d.name}/> }
+                        </AntField>
+                        <AntField field={fields.tags} label="Tags">
+                            { props => <AntMultiSelect {...props} dataSource={state.tags} optionText={d => d.id}/> }
                         </AntField>
     
-                        <button {...bindToCommand(state.save)}>Save</button>
-                        <button {...bindToCommand(state.reset)}>Reset</button>
-                    </>)
+                        <Button {...bindToCommand(state.save)}>Save</Button>
+                        <Button {...bindToCommand(state.reset)}>Reset</Button>
+                    </fieldset>)
                 }
                 </AntForm>
-            </div>
+            </PageHeader>
     }});

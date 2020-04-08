@@ -40,7 +40,7 @@ export class HomeRouteDefinition<TModel extends IRoutedPage & { activate: ()=>vo
         };
         
         const model = await this.modelFactory();
-        const childBinding =  await this.bindFirstMatchingChildToPath(updateLocation, model, history.location.pathname, history.location.hash);
+        const childBinding =  await this.bindFirstMatchingChildToPath(updateLocation, model, history.location.pathname, history.location.hash.substr(1));
         const binding = new RouteBinding<TModel>(updateLocation, this, "", model, childBinding);
         
         const unlisten = history.listen(async (location, action) => {

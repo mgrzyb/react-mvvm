@@ -26,8 +26,6 @@ export const HomePageView = observer(({ model } : { model : HomePage}) => {
             </Layout.Header>
             <Layout.Content style={{padding: '0 50px'}}>
                 <ContentView content={model.childPage}>
-                    <button {...bindToCommand(model.confirmation)}>Confirmation</button>
-                    <button {...bindToCommand(model.alert)}>Alert</button>
                     <button {...bindToCommand(model.showCustomDialog)}>Custom</button>
 
                     {model.dialog?.type == "Custom" &&

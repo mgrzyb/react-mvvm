@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelUserStore">
-    <attachedFolders />
+    <attachedFolders>
+      <Path>react-mvvm-demo/src</Path>
+      <Path>react-mvvm/src</Path>
+    </attachedFolders>
     <explicitIncludes />
-    <explicitExcludes />
+    <explicitExcludes>
+      <Path>react-mvvm-demo/dist</Path>
+      <Path>react-mvvm/dist</Path>
+    </explicitExcludes>
   </component>
 </project>

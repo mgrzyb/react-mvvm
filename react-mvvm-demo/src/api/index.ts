@@ -4,6 +4,14 @@ export interface UserDto {
     lastName : string;
     email : string;
     departmentId : string;
+    tags : string[]
+}
+
+export interface UserListItemDto {
+    id : string;
+    firstName : string;
+    lastName : string;
+    email : string;
 }
 
 export const userDtoMetadata : { [P in keyof UserDto] : { required? : boolean }} = {
@@ -17,7 +25,8 @@ export const userDtoMetadata : { [P in keyof UserDto] : { required? : boolean }}
     email : {},
     departmentId: {
         required: true
-    }
+    },
+    tags: {}
 };
 
 export type DepartmentDto = { id : string, name : string };
@@ -32,8 +41,15 @@ export function getDepartments() {
 export function getUser(userId : string) {
     return new Promise<UserDto | null>(
         r => setTimeout(
-            () => r(userId === "user-1" ? { id: "user-1", firstName: "Maciej", lastName: "Sraciej", email: "macio@sracio.com", departmentId: "dep1"} : null),
+            () => r(userId === "user-1" ? { id: "user-1", firstName: "John", lastName: "Doe", email: "john.doe@people.com", departmentId: "dep1", tags: ["A"]} : null),
             2000))
+}
+
+export function getUserList(nameLike : string, options : { skip : number, take : number}) {
+    return new Promise<UserListItemDto[]>(
+        r => setTimeout(
+            () => r(new Array(options.take).fill(undefined).map((_, i) => ({ id: `user-${options.skip + i}`, firstName: `User ${nameLike} ${options.skip + i}`, lastName: "Smith", email: "agent@smith.com" }))),
+            2000));
 }
 
 export function updateUser(user : UserDto) {
@@ -56,16 +72,6 @@ export function createUser(user : UserDto) {
                 r({...user});
             },
             2000))
-}
-
-export function getUserList(filter: { nameLike: string, userGroup: UserGroupDto | undefined }) {
-    return new Promise<any[]>(r => {
-        const result = [
-            filter.nameLike + "1 " + (filter.userGroup && filter.userGroup.name || ""),
-            filter.nameLike + "2 " + (filter.userGroup && filter.userGroup.name || "")
-        ];
-        setTimeout(() => r(result), 1000);
-    });
 }
 
 export function getUserGroupList() {
