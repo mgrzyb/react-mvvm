@@ -124,24 +124,3 @@ export class FormField<T> implements IFormField {
 }
 
 export type FormFieldValidator<T> = <T>(value : T | undefined) => (true | string[]) | PromiseLike<true | string[]>;
-
-
-export const NullValidator = (value : any) : true => true;
-
-function isEmpty(value : {} | string | number | undefined | null) {
-    if (!value)
-        return true;
-    
-    if (Array.isArray(value))
-        return value.length === 0;
-    
-    return value.toString().length === 0
-}
-
-export function RequiredFieldValidator(value: any | undefined) : true | string[] {
-    if (!isEmpty(value)) {
-        return true;
-    } else {
-        return ["Field is required"];
-    }
-}

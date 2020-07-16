@@ -1,6 +1,7 @@
 import { asyncCommand, bindableForm, bindToApi, command, Deferred, Loading, Page, property } from "react-mvvm";
 import { observable } from "mobx";
 import { createUser, DepartmentDto, getDepartments, UserDto, userDtoMetadata } from "../../api";
+import { email, required, validators } from "react-mvvm";
 
 export class NewUserDialog {
     type: "NewUserDialog" = "NewUserDialog";
@@ -14,7 +15,11 @@ export class NewUserDialog {
     }
 
     userForm = bindableForm<UserDto>(userDtoMetadata)
-        .addAllFieldsExcept("id", "departmentId")
+        .addAllFieldsExcept("id", "departmentId", "email")
+        .addField("email", { validator: validators(
+                required(),
+                email("Email"),
+                this.customValidate.bind(this)) })
         .addLookupField("departmentId", () => this.departments, { fieldName: "department" })
         .bindTo(() => this.user);
 
@@ -27,4 +32,10 @@ export class NewUserDialog {
         () => !this.userForm.isPristine);
     
     cancel = () => this.close(undefined);
+    
+    customValidate<T>(v : T | undefined) : true | string[] {
+        return this.userForm.fields.email.value?.startsWith(this.userForm.fields.firstName?.value ?? "") ? 
+            true : 
+            ["Must start with first name"];        
+    }
 }

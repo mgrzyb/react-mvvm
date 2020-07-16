@@ -38,7 +38,7 @@ function fieldImpl<T>(props : { field : FormField<T>, children : ChildrenType<T>
     const inputProps = { ...bindTo(property(field, "value")), onCommit: () => field.commit() };
     
     return (
-        <TheForm.Item {...props} validateStatus={getValidationStatus(field)} help={field.errors.join("\n")} hasFeedback={field.state === FormState.Invalid}>
+        <TheForm.Item {...props} validateStatus={getValidationStatus(field)} help={field.errors?.map(e => <span>{e}</span>)} hasFeedback={field.state === FormState.Invalid}>
             { props.children(inputProps) }
         </TheForm.Item>);
 }

@@ -17,6 +17,9 @@ export const NewUserDialogView = observer(({ dialog } : { dialog : NewUserDialog
                     <AntField field={fields.lastName} label="Last name">
                         {(props) => <AntTextInput {...props} />}
                     </AntField>
+                    <AntField field={fields.email} label="Email">
+                        {(props) => <AntTextInput {...props} />}
+                    </AntField>
                     <AntField field={fields.department} label="Department">
                         { props => <AntSingleSelect {...props} dataSource={dialog.departments} optionText={d => d.name}/> }
                     </AntField>

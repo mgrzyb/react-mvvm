@@ -1,10 +1,11 @@
 import * as React from "react";
-import { asyncCommand, command, RequiredFieldValidator } from "react-mvvm";
+import { asyncCommand, command } from "react-mvvm";
 import { observable } from "mobx";
 import { Deferred, bindToApi, Loading, property } from "react-mvvm";
 import { Page } from "react-mvvm";
 import { bindableForm } from "react-mvvm";
 import { DepartmentDto, getDepartments, getUser, updateUser, UserDto, userDtoMetadata } from "../../api";
+import { required } from "react-mvvm";
 
 export class UserDetailsPage extends Page {
 
@@ -36,10 +37,10 @@ class Loaded {
         .addCustomField("lastName", 
             async dto => dto.lastName?.toUpperCase() ?? "",
             (dto, value) => dto.lastName = value, 
-            { validator: RequiredFieldValidator })
-        .addField("email", { validator: RequiredFieldValidator })
+            { validator: required() })
+        .addField("email", { validator: required() })
         .addLookupField("departmentId", () => this.departments, { fieldName: "department" })
-        .addMultiLookupField("tags", () => this.tags, { validator: RequiredFieldValidator })
+        .addMultiLookupField("tags", () => this.tags, { validator: required() })
         .bindTo(() => this.user);
 
     save = asyncCommand(

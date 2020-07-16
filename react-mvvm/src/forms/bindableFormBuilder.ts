@@ -1,7 +1,7 @@
 import { BindableFormFieldDefinition } from "./bindableFormFieldDefinition";
 import { Deferred, ensureLoaded, FormFieldValidator } from "../index";
 import { BindableForm } from "./bindableForm";
-import { NullValidator, RequiredFieldValidator } from "./formField";
+import { NullValidator, required } from "./validators";
 
 export class BindableFormBuilder<T, S = {}> {
     constructor(private fieldDefinitions: { [P in keyof S]: BindableFormFieldDefinition<T, S[P]> }, private metadata?: { [P in keyof T] : { required? : boolean }}) {
@@ -116,6 +116,6 @@ export class BindableFormBuilder<T, S = {}> {
     }
     
     private getValidator<TField, TDtoKey extends keyof T>(dtoField: TDtoKey, options?: { validator?: FormFieldValidator<any> }) {
-        return (options?.validator ?? (this.metadata && (this.metadata[dtoField].required ? RequiredFieldValidator : undefined))) || NullValidator;
+        return (options?.validator ?? (this.metadata && (this.metadata[dtoField].required ? required() : undefined))) || NullValidator;
     }
 }

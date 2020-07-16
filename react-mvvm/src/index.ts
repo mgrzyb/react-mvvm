@@ -8,6 +8,7 @@ export * from "./ContentView";
 export * from "./Page";
 export * from "./navigation";
 export * from "./lists";
+export * from "./forms/validators";
 
 export interface IProperty<T> {
   get: () => T;
