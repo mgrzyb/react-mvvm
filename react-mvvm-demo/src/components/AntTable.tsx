@@ -62,14 +62,18 @@ function AntPaginatedTableImpl<T extends { id : number | string }>({ list, ...pr
                     <tbody className={className}>
                         {children}
                         { list.hasNextPage && 
-                        <tr>
-                            <td colSpan={props.columns.length + (props.selection ? 1 : 0)}>
-                                <button {...bindToCommand(list.loadNextPage)}>Load more</button>
-                            </td>
-                        </tr>}
+                            <Footer list={list} span={props.columns.length + (props.selection ? 1 : 0)} /> }
                     </tbody>)}
         }} />
 }
+
+const Footer = observer(({ list, span } : { list : PaginatedList<any>, span : number }) => (
+    <tr>
+        <td colSpan={span}>
+            <button {...bindToCommand(list.loadNextPage)}>Load more</button>
+        </td>
+    </tr>
+));
 
 export const AntTable = observer(AntTableImpl);
 export const PaginatedAntTable = observer(AntPaginatedTableImpl);

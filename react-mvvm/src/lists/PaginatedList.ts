@@ -1,8 +1,8 @@
 import { autorun, observable, runInAction, untracked } from "mobx";
 import { List } from "./List";
 import { asyncCommand, ICommand } from "../commands";
-
-const PAGE_SIZE: number = 50;
+ 
+const PAGE_SIZE: number = 10;
 
 export class PaginatedList<T extends { id : string | number }> extends List<T> {
 
