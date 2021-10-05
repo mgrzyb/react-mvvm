@@ -1,6 +1,8 @@
 import { action, computed, observable, reaction } from "mobx";
 
-export enum FormState {
+export type FormFieldValidator<T> = (value : T | undefined) => (true | string[]) | PromiseLike<true | string[]>;
+
+export enum FormValidationState {
     Pending,
     Valid,
     Invalid
@@ -9,7 +11,7 @@ export enum FormState {
 export interface IFormField {
     readonly isValidating: boolean;
     readonly isPristine: boolean;
-    readonly state: FormState;
+    readonly state: FormValidationState;
 
     validate(): Promise<readonly string[] | true>;
     commit(): Promise<void>;
@@ -31,17 +33,15 @@ export class FormField<T> implements IFormField {
         return !this.isPristine;
     }
     
-    @computed get state(): FormState {
+    @computed get state(): FormValidationState {
         if (this._isPendingValidation)
-            return FormState.Pending;
+            return FormValidationState.Pending;
         if (this._currentValidation)
-            return FormState.Pending;
-        return this.errors.length === 0 ? FormState.Valid : FormState.Invalid;
+            return FormValidationState.Pending;
+        return this.errors.length === 0 ? FormValidationState.Valid : FormValidationState.Invalid;
     }
 
-    @observable private _isPendingValidation = true;
     @observable.ref private _errors: ReadonlyArray<string> = [];
-
     get errors(): ReadonlyArray<string> {
         return this._errors;
     }
@@ -49,6 +49,7 @@ export class FormField<T> implements IFormField {
     @observable.ref private _pristineValue: T | undefined;
     @observable private _valueHasBeenCommitted : boolean = false;
     @observable.ref private _currentValidation : Promise<readonly string[] | true> | undefined;
+    @observable private _isPendingValidation = true;
     private _needsValidation: boolean = false;
     
     constructor(value: T | undefined, private validator : FormFieldValidator<T>, private comparer? : (a : T, b : T) => boolean) {
@@ -88,7 +89,7 @@ export class FormField<T> implements IFormField {
     }
 
     async commit() {
-        if (this.state !== FormState.Invalid)
+        if (this.state !== FormValidationState.Invalid)
             await this.validate();
         this._valueHasBeenCommitted = true;
     }
@@ -122,5 +123,3 @@ export class FormField<T> implements IFormField {
         return false;
     }
 }
-
-export type FormFieldValidator<T> = <T>(value : T | undefined) => (true | string[]) | PromiseLike<true | string[]>;

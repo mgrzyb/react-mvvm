@@ -1,3 +1,3 @@
 export interface IParentRoute<TParams> {
-    getPath(params: TParams): string;
+  getPath(params: TParams): string;
 }

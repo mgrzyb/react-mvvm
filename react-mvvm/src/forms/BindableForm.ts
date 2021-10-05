@@ -1,12 +1,16 @@
-import { FormField } from "./formField";
+import { FormField, FormFieldValidator } from "./formField";
 import { Form } from "./form";
-import { BindableFormFieldDefinition } from "./bindableFormFieldDefinition";
-import { isLoaded } from "../index";
 import { reaction } from "mobx";
 import { BindableFormBuilder } from "./bindableFormBuilder";
+import { isLoaded } from "../deferred";
 
 export function bindableForm<TDto>(metadata?: { [P in keyof TDto] : { required? : boolean }}) : BindableFormBuilder<TDto> {
     return new BindableFormBuilder<TDto>({}, metadata);
+}
+
+export class BindableFormFieldDefinition<TDto, TValue> {
+    constructor(public validator : FormFieldValidator<TValue>, public getValueFromDto: (dto: Partial<TDto>) => Promise<TValue | undefined>, public updateDto: (dto: Partial<TDto>, value: TValue) => void) {
+    }
 }
 
 export class BindableForm<TDto, TSchema> {

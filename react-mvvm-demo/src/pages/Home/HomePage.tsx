@@ -33,28 +33,15 @@ export class HomePage extends Page<CustomDialog> {
 class CustomDialog {
     type: "Custom" = "Custom";
     @observable count: number = 0;
-    inc : Command<void>;
-    dec : Command<void>;
-    done : Command<void>;
+    inc = command(() => this.count++, () => this.count<10);
+    dec = command(() => this.count--, () => this.count > 0);
+    done : Command;
     cancel: () => void;
 
     constructor(close : (result : number | undefined) => void) {
-        this.inc = command(
-            () => {
-                this.count++;
-            }, 
-            () => this.count<10);
-
-        this.dec = command(
-            () => {
-                this.count--;
-            },
-            () => this.count > 0);
-        
         this.done = asyncCommand(
             () => new Promise(r => setTimeout(() => close(this.count), 2000)),
             () => this.count > 5);
-        
         this.cancel = () => close(undefined);
     }
 }

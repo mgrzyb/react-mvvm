@@ -1,5 +1,5 @@
 import { default as React, ReactElement, ReactNode } from "react";
-import { bindTo, FormField, FormFields, FormState, IFormField, property } from "react-mvvm";
+import { bindTo, FormField, FormFields, FormValidationState, IFormField, property } from "react-mvvm";
 import { Form as TheForm } from "antd";
 import { observer } from "mobx-react";
 import { FormProps } from "antd/lib/form";
@@ -22,11 +22,11 @@ function antFormImpl<T>(props : AntFormParams<T> & Omit<FormProps, "form" | "chi
 export const AntForm = observer(antFormImpl);
 
 function getValidationStatus(field : IFormField) {
-    if (field.state === FormState.Invalid)
+    if (field.state === FormValidationState.Invalid)
         return "error";
     if (field.isValidating)
         return "validating";
-    if (field.state === FormState.Valid)
+    if (field.state === FormValidationState.Valid)
         return "success";
     return "";
 }
@@ -38,7 +38,7 @@ function fieldImpl<T>(props : { field : FormField<T>, children : ChildrenType<T>
     const inputProps = { ...bindTo(property(field, "value")), onCommit: () => field.commit() };
     
     return (
-        <TheForm.Item {...props} validateStatus={getValidationStatus(field)} help={field.errors?.map(e => <span>{e}</span>)} hasFeedback={field.state === FormState.Invalid}>
+        <TheForm.Item {...props} validateStatus={getValidationStatus(field)} help={field.errors?.map(e => <span>{e}</span>)} hasFeedback={field.state === FormValidationState.Invalid}>
             { props.children(inputProps) }
         </TheForm.Item>);
 }

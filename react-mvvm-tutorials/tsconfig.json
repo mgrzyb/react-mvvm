@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "es5",
+    "module": "esnext",
+    "lib": ["es2017.object", "es2017.string", "es5", "es2015", "dom"],
+    "baseUrl": "./",
+    "paths": {
+    },
+    "jsx": "react",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

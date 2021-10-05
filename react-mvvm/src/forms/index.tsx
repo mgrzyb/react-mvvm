@@ -1,10 +1,10 @@
 import { IProperty } from "../index";
-import { BindableForm } from "./bindableForm";
-import { default as React, ReactElement, ReactNode } from "react";
+import { BindableForm } from "./BindableForm";
 
-export * from "./form";
-export * from "./formField";
-export * from "./bindableForm";
+export * from "./Form";
+export * from "./FormField";
+export * from "./BindableForm";
+export * from "./validators";
 
 export function formField<TDto, TSchema, P extends keyof  TSchema>(form : BindableForm<TDto, TSchema>, field : P) : IProperty<TSchema[P] | undefined> {
     return {

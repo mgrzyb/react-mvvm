@@ -1,7 +1,7 @@
-import { BindableFormFieldDefinition } from "./bindableFormFieldDefinition";
-import { Deferred, ensureLoaded, FormFieldValidator } from "../index";
-import { BindableForm } from "./bindableForm";
+import { BindableForm, BindableFormFieldDefinition } from "./bindableForm";
 import { NullValidator, required } from "./validators";
+import { FormFieldValidator } from "./formField";
+import { Deferred, ensureResolved } from "../deferred/Deferred";
 
 export class BindableFormBuilder<T, S = {}> {
     constructor(private fieldDefinitions: { [P in keyof S]: BindableFormFieldDefinition<T, S[P]> }, private metadata?: { [P in keyof T] : { required? : boolean }}) {
@@ -49,20 +49,22 @@ export class BindableFormBuilder<T, S = {}> {
         return new BindableFormBuilder(this.fieldDefinitions as any, this.metadata);
     }
     
-    addLookupField<TDtoKey extends keyof T, TComponent extends { id: string | number }>(dtoField: TDtoKey, dataSource: () => Deferred<readonly TComponent[]>)
-        : BindableFormBuilder<T, S & { [P in TDtoKey]: TComponent }>
-    addLookupField<TDtoKey extends keyof T, TComponent extends { id: string | number }, TField extends keyof any>(dtoField: TDtoKey, dataSource: () => Deferred<readonly TComponent[]>, options : { validator? : FormFieldValidator<TComponent> })
-        : BindableFormBuilder<T, S & { [P in TDtoKey]: TComponent }>
-    addLookupField<TDtoKey extends keyof T, TComponent extends { id: string | number }, TField extends keyof any>(dtoField: TDtoKey, dataSource: () => Deferred<readonly TComponent[]>, options : { fieldName: TField, validator? : FormFieldValidator<TComponent> })
-        : BindableFormBuilder<T, S & { [P in TField]: TComponent | undefined }>
-    addLookupField<TDtoKey extends keyof T, TComponent extends { id: string | number }, TField extends keyof any>(dtoField: TDtoKey, dataSource: () => Deferred<readonly TComponent[]>, options? : { fieldName?: TField, validator? : FormFieldValidator<TComponent> })
-        : BindableFormBuilder<T, S & { [P in TField]: TComponent | undefined }> {
-        const fieldDefinition = new BindableFormFieldDefinition<T, TComponent | undefined>(
+    addLookupField<TDtoKey extends keyof T, TItemId, TItem extends { id: TItemId }>(dtoField: TDtoKey, dataSource: (id : TItemId) => Promise<TItem | undefined>)
+        : BindableFormBuilder<T, S & { [P in TDtoKey]: TItem }>
+    addLookupField<TDtoKey extends keyof T, TItemId, TItem extends { id: TItemId }, TField extends keyof any>(dtoField: TDtoKey, dataSource: (id : TItemId) => Promise<TItem | undefined>, options : { validator? : FormFieldValidator<TItem> })
+        : BindableFormBuilder<T, S & { [P in TDtoKey]: TItem }>
+    addLookupField<TDtoKey extends keyof T, TItemId, TItem extends { id: TItemId }, TField extends keyof any>(dtoField: TDtoKey, dataSource: (id : TItemId) => Promise<TItem | undefined>, options : { fieldName: TField, validator? : FormFieldValidator<TItem> })
+        : BindableFormBuilder<T, S & { [P in TField]: TItem | undefined }>
+    addLookupField<TDtoKey extends keyof T, TItemId, TItem extends { id: TItemId }, TField extends keyof any>(dtoField: TDtoKey, dataSource: (id : TItemId) => Promise<TItem | undefined>, options? : { fieldName?: TField, validator? : FormFieldValidator<TItem> })
+        : BindableFormBuilder<T, S & { [P in TField]: TItem | undefined }> {
+        const fieldDefinition = new BindableFormFieldDefinition<T, TItem | undefined>(
             this.getValidator(dtoField, options),
             async dto => {
-                const ds = await ensureLoaded(dataSource);
-                // @ts-ignore
-                return ds.find(i => i.id == dto[dtoField]);
+                try {
+                    return dataSource(dto[dtoField] as unknown as TItemId); // TODO
+                } catch (e) {
+                    return undefined;
+                }
             },
             (dto, value) => dto[dtoField] = value && value.id as any);
         const fieldName = options?.fieldName ?? dtoField;
@@ -81,7 +83,7 @@ export class BindableFormBuilder<T, S = {}> {
         const fieldDefinition = new BindableFormFieldDefinition<T, TComponent[]>(
             this.getValidator(dtoField, options),
             async dto => {
-                const ds = await ensureLoaded(dataSource);
+                const ds = await ensureResolved(dataSource);
                 if (!dto[dtoField])
                     return [];
                 // @ts-ignore

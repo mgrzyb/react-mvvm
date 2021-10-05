@@ -1,26 +1,22 @@
-import * as React from "react";
-
 export interface IConfirmationDialog {
-  type: "Confirmation";
-  title: string;
+  type: 'Confirmation';
   content: string;
   yes: () => void;
   no: () => void;
 }
 
 export interface IAlertDialog {
-  type: "Alert";
+  type: 'Alert';
   title: string;
   content: string;
   isSuccess: boolean;
   ok: () => void;
 }
 
-export function confirmationDialog(title: string, content: string) {
-  return function(close: (result: boolean) => void): IConfirmationDialog {
+export function confirmationDialog(content: string) {
+  return function (close: (result: boolean) => void): IConfirmationDialog {
     return {
-      type: "Confirmation",
-      title: title,
+      type: 'Confirmation',
       content: content,
       yes: () => close(true),
       no: () => close(false)
@@ -29,9 +25,9 @@ export function confirmationDialog(title: string, content: string) {
 }
 
 export function alertDialog(title: string, content: string, isSuccess: boolean = true) {
-  return function(close: (result: undefined) => void): IAlertDialog {
+  return function (close: (result: undefined) => void): IAlertDialog {
     return {
-      type: "Alert",
+      type: 'Alert',
       title: title,
       content: content,
       isSuccess,

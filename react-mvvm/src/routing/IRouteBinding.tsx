@@ -1,7 +1,5 @@
 export interface IRouteBinding {
-    getLocation(): { path: string, hash: string };
-
-    destroy(): void;
-
-    tryUpdate(remainingPath: string, hash: string): Promise<boolean>;
+  getLocation(): { path: string; query: { [key : string] : string}, hash: string };
+  tryUpdate(remainingPath: string, query: { [key : string] : string }, hash: string): Promise<boolean | 'blocked'>;
+  destroy(): void;
 }

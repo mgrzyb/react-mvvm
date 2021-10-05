@@ -1,5 +1,12 @@
 /.idea/
+/react-mvvm/.idea/
 /react-mvvm/node_modules/
 /react-mvvm/dist/
+/react-mvvm-demo/.idea/
 /react-mvvm-demo/node_modules/
 /react-mvvm-demo/dist/
+/react-mvvm-tutorials/node_modules/
+/react-mvvm-tutorials/.idea/.idea.react-mvvm-tutorials.dir/.idea/
+/react-mvvm/peer_modules/
+/react-mvvm-tutorials/src/*/dist/
+/react-mvvm-tutorials/src/*/.cache/

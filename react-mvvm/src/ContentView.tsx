@@ -1,19 +1,25 @@
-import * as React from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { ReactElement, ReactNode } from 'react';
-import { ConstructorOf } from "./ConstructorOf";
+import { ConstructorOf } from './ConstructorOf';
 
 const viewFactories = new Map();
 
-export const ContentView = observer((props: { content: object | null | undefined, children? : ReactNode }) => {
+function renderChildren(children: React.ReactNode | (() => React.ReactNode) | undefined) {
+  return (typeof children === 'function' ? children() : children) ?? null;
+}
 
-  if (!props.content) return props.children;
+export const ContentView = observer((props: { content: object | null | undefined | (() => object); children?: ReactNode | (() => ReactNode) }) => {
+  if (!props.content) return renderChildren(props.children);
 
-  let viewFactory = viewFactories.get(props.content.constructor);
+  const content = typeof props.content === 'function' ? props.content() : props.content;
+  if (!content) return renderChildren(props.children);
 
-  if (props.content && viewFactory) return viewFactory(props.content);
-  else return <div>Please regiter view for {props.content.constructor.toString()}</div>
-})
+  let viewFactory = viewFactories.get(content.constructor);
+
+  if (content && viewFactory) return viewFactory(content);
+  else return <div>Please regiter view for {content.constructor.toString()}</div>;
+});
 
 export function registerContentView<T>(contentConstructor: ConstructorOf<T>, viewFactory: (content: T) => ReactElement<any>) {
   viewFactories.set(contentConstructor, viewFactory);
