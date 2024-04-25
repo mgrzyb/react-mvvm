@@ -23,6 +23,7 @@ registerContentView(UserDetailsPage, p => <UserDetailsPageView model={p}/>);
 
 (async function () {
     const history = createBrowserHistory();
-    const {page} = await homeRoute.bind(history);
-    ReactDOM.render(<ContentView content={page}/>, document.getElementById("app"));
+    const homePage = new HomePage();
+    const dispose = await homeRoute.bind(homePage, history);
+    ReactDOM.render(<ContentView content={homePage}/>, document.getElementById("app"));
 })();

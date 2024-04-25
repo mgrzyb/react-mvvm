@@ -1,5 +1,6 @@
 import { computed } from "mobx";
 import { IRoutedPage } from "../routing";
+import {Page} from "../Page";
 
 class Navigation<T> {
 
@@ -25,8 +26,8 @@ class Navigation<T> {
 
 type NavigationPage = {
     readonly childPage: IRoutedPage | undefined;
-    showChildPage(newPage: any) : void;
-    removeChildPage() : void;
+    tryShowChildPage<T extends Page>(newPage: T) : Promise<boolean>;
+    tryRemoveChildPage() : Promise<boolean>;
 };
 
 class NavigationItem {
@@ -36,18 +37,18 @@ class NavigationItem {
             (this.page.childPage === undefined && this.item === undefined);
     }
 
-    constructor(public readonly key : string, private page: NavigationPage, private item: (new () => IRoutedPage) | undefined) {
+    constructor(public readonly key : string, private page: NavigationPage, private item: (new () => Page) | undefined) {
     }
 
-    activate = () => {
+    activate = async () => {
         if (this.item)
-            this.page.showChildPage(new this.item());
+            await this.page.tryShowChildPage(new this.item());
         else
-            this.page.removeChildPage();
+            await this.page.tryRemoveChildPage();
     }
 }
 
-export function navigation<T extends { [k : string] : (new () => IRoutedPage) | undefined}>(page : NavigationPage, items : T ) : Navigation<T> {
+export function navigation<T extends { [k : string] : (new () => Page) | undefined}>(page : NavigationPage, items : T ) : Navigation<T> {
 
     const navItems : { [P in keyof T]? : NavigationItem } = { };
 

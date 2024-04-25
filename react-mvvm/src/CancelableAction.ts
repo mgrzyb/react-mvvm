@@ -12,7 +12,12 @@ export interface ICancelableAction {
 
 export class CancelableAction implements ICancelableAction {
   private readonly continuations: (() => Promise<any> | void)[] = [];
-
+  
+  constructor(action? : () => Promise<any> | void) {
+    if (action)
+      this.then(action);
+  }
+  
   private _canceled = false;
   get canceled() {
     return this._canceled;

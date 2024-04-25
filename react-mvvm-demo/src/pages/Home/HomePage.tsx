@@ -1,10 +1,10 @@
 import * as React from "react";
-import { computed, observable } from "mobx";
-import { navigation, asyncCommand, command, Command, IPage, Page } from "react-mvvm";
+import { observable } from "mobx";
+import {navigation, asyncCommand, command, Command, IPage, Page, withModal} from "react-mvvm";
 import { UserListPage } from "../Users/UserListPage";
 import { ProjectListPage } from "../Projects/ProjectListPage";
 
-export class HomePage extends Page<CustomDialog> {
+export class HomePage extends withModal<CustomDialog>()(Page) {
 
     showCustomDialog : Command<void>;
 
@@ -24,7 +24,7 @@ export class HomePage extends Page<CustomDialog> {
         });
     }
 
-    async show<T extends IPage>(model: T) {
+    async show<T extends Page>(model: T) {
         await this.showChildPage(model);
         return model;
     }
