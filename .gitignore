@@ -10,3 +10,6 @@
 /react-mvvm/peer_modules/
 /react-mvvm-tutorials/src/*/dist/
 /react-mvvm-tutorials/src/*/.cache/
+/react-mvvm-demo-new/.parcel-cache
+/react-mvvm-demo-new/node_modules
+/react-mvvm-demo-new/dist

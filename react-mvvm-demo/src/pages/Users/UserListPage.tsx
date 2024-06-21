@@ -1,15 +1,24 @@
-import { observable, reaction, runInAction } from "mobx";
-import { asyncCommand, bindTo, bindToApi, ContentView, Deferred, isLoaded, Page, property } from "react-mvvm";
+import { observable } from "mobx";
+import {
+    asyncCommand,
+    IDeferredValue,
+    lazyValue,
+    Page,
+    withModal
+} from "react-mvvm";
 import { UserDetailsPage } from "./UserDetailsPage";
 import * as React from "react";
-import { getUserGroupList, getUserList, UserDto, UserGroupDto, UserListItemDto } from "../../api";
+import { getUserGroupList, getUserList, UserDto, UserGroupDto } from "../../api";
 import { NewUserDialog } from "./NewUserDialog";
 import { PaginatedList } from "react-mvvm";
 
-export class UserListPage extends Page<NewUserDialog> {
+export class UserListPage extends withModal<NewUserDialog>()(Page) {
     
     @observable.ref
-    userGroups : Deferred<UserGroupDto[]> = "Loading";
+    private _userGroups : IDeferredValue<UserGroupDto[]>;
+    get userGroups() {
+        return this._userGroups.value;
+    }
     
     @observable
     filter : { nameLike : string, userGroup : UserGroupDto | undefined } = { 
@@ -28,7 +37,7 @@ export class UserListPage extends Page<NewUserDialog> {
     
     constructor() {
         super();
-        bindToApi(property(this, "userGroups"), () => getUserGroupList());
+        this._userGroups = lazyValue(() => getUserGroupList());
     }
     
     showUser(userId: string) {

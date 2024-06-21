@@ -1,14 +1,18 @@
-import { FormField, FormFieldValidator } from "./formField";
-import { Form } from "./form";
-import { reaction } from "mobx";
-import { BindableFormBuilder } from "./bindableFormBuilder";
-import { isLoaded } from "../deferred";
+import {FormField, FormFieldValidator} from "./FormField";
+import {Form} from "./Form";
+import {reaction} from "mobx";
+import {BindableFormBuilder} from "./BindableFormBuilder";
 
 export function bindableForm<TDto>(metadata?: { [P in keyof TDto] : { required? : boolean }}) : BindableFormBuilder<TDto> {
     return new BindableFormBuilder<TDto>({}, metadata);
 }
 
-export class BindableFormFieldDefinition<TDto, TValue> {
+interface IFormFieldBinding<TDto, TValue> {
+    getValueFromDto: (dto: Partial<TDto>) => Promise<TValue | undefined>;
+    updateDto: (dto: Partial<TDto>, value: TValue) => void;
+}
+
+export class BindableFormFieldDefinition<TDto, TValue> implements IFormFieldBinding<TDto, TValue> {
     constructor(public validator : FormFieldValidator<TValue>, public getValueFromDto: (dto: Partial<TDto>) => Promise<TValue | undefined>, public updateDto: (dto: Partial<TDto>, value: TValue) => void) {
     }
 }
@@ -21,9 +25,9 @@ export class BindableForm<TDto, TSchema> {
     readonly fields: { [P in keyof TSchema]: FormField<TSchema[P]> };
 
     private readonly inner: Form;
-    private readonly fieldBindings: [FormField<any>, BindableFormFieldDefinition<TDto, any>][] = [];
+    private readonly fieldBindings: [FormField<any>, IFormFieldBinding<TDto, any>][] = [];
 
-    constructor(private fieldDefinitions: { [P in keyof TSchema]: BindableFormFieldDefinition<TDto, TSchema[P]> }, private dtoAccessor: () => Partial<TDto>) {
+    constructor(private fieldDefinitions: { [P in keyof TSchema]: BindableFormFieldDefinition<TDto, TSchema[P]> }, private dtoAccessor: () => Partial<TDto> | undefined) {
         const fields: any = {};
         for (const p in fieldDefinitions) {
             if (!fieldDefinitions.hasOwnProperty(p))
@@ -54,8 +58,7 @@ export class BindableForm<TDto, TSchema> {
 
     commit() {
         const dto = this.dtoAccessor();
-        if (isLoaded(dto))
-            this._commit(dto)
+        if (dto) this._commit(dto)
     }
 
     async validateAndCommit() {
@@ -65,7 +68,7 @@ export class BindableForm<TDto, TSchema> {
         return true;
     }
     
-    private async _reset(dto: Partial<TDto>) {
+    private async _reset(dto: Partial<TDto> | undefined) {
         if (!dto) 
             return;
         await Promise.all(this.fieldBindings.map(b => {

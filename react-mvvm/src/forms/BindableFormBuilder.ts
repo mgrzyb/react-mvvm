@@ -1,6 +1,6 @@
-import { BindableForm, BindableFormFieldDefinition } from "./bindableForm";
+import { BindableForm, BindableFormFieldDefinition } from "./BindableForm";
 import { NullValidator, required } from "./validators";
-import { FormFieldValidator } from "./formField";
+import { FormFieldValidator } from "./FormField";
 import { Deferred, ensureResolved } from "../deferred/Deferred";
 
 export class BindableFormBuilder<T, S = {}> {
@@ -106,7 +106,7 @@ export class BindableFormBuilder<T, S = {}> {
         return new BindableFormBuilder(this.fieldDefinitions as any, this.metadata);
     }
     
-    bindTo(dtoAccessor : () => Partial<T>): BindableForm<T, S> {
+    bindTo(dtoAccessor : () => T | undefined): BindableForm<T, S> {
         return new BindableForm<T, S>(this.fieldDefinitions, dtoAccessor);
     }
 

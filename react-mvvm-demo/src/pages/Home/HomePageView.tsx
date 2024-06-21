@@ -28,11 +28,11 @@ export const HomePageView = observer(({ model } : { model : HomePage}) => {
                 <ContentView content={model.childPage}>
                     <button {...bindToCommand(model.showCustomDialog)}>Custom</button>
 
-                    {model.dialog?.type == "Custom" &&
-                    <AntModal okCommand={model.dialog.done} cancel={model.dialog.cancel}>
-                        <button {...bindToCommand(model.dialog.dec)}>-</button>
-                        {model.dialog.count}
-                        <button {...bindToCommand(model.dialog.inc)}>+</button>
+                    {model.modal?.type == "Custom" &&
+                    <AntModal okCommand={model.modal.done} cancel={model.modal.cancel}>
+                        <button {...bindToCommand(model.modal.dec)}>-</button>
+                        {model.modal.count}
+                        <button {...bindToCommand(model.modal.inc)}>+</button>
                     </AntModal>
                     }
                 </ContentView>

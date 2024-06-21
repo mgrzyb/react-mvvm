@@ -4,6 +4,7 @@ export * from './dialogs';
 export * from './deferred';
 export * from './forms';
 export * from './lists';
+export * from './navigation';
 export * from './ContentView';
 export * from './Page';
 

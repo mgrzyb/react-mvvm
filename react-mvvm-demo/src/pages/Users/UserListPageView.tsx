@@ -47,7 +47,7 @@ export const UsersPageView = observer(({ model } : { model : UserListPage}) => {
 
                 </PageHeader>
                 
-                { model.dialog?.type === "NewUserDialog" && <NewUserDialogView dialog={model.dialog}/> }
+                { model.modal?.type === "NewUserDialog" && <NewUserDialogView dialog={model.modal}/> }
             </ContentView>             
         </div>);
 });

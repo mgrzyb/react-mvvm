@@ -1,7 +1,6 @@
 import { asyncCommand, email, lazyValue, required, validators } from "react-mvvm";
 import { createUser, DepartmentDto, getDepartments, UserDto, userDtoMetadata } from "../../api";
-import { IDeferredValue, bindableForm } from "react-mvvm";
-import { ensureResolved } from "../../../../react-mvvm/src";
+import { IDeferredValue, bindableForm, ensureResolved } from "react-mvvm";
 
 export class NewUserDialog {
     type: "NewUserDialog" = "NewUserDialog";
@@ -13,7 +12,15 @@ export class NewUserDialog {
         return this._departments.value;
     }
 
-    userForm;
+    userForm = bindableForm<UserDto>(userDtoMetadata)
+      .addField("email", { validator: (value : string | undefined) => true})
+      .addAllFieldsExcept("id", "departmentId", "email")
+      .addField("email", { validator: validators(
+            required(),
+            email("Email"),
+            this.customValidate.bind(this)) })
+      .addLookupField("departmentId", this.getDepartmentById, { fieldName: "department" })
+      .bindTo(() => this.user);
 
     save = asyncCommand(
         async () => {
@@ -27,16 +34,6 @@ export class NewUserDialog {
 
     constructor(private close : (u : UserDto | undefined) => void)  {
         this._departments = lazyValue(() => getDepartments());
-
-        this.userForm = bindableForm<UserDto>(userDtoMetadata)
-          .addField("email", { validator: (value : string | undefined) => true})
-          .addAllFieldsExcept("id", "departmentId", "email")
-          .addField("email", { validator: validators(
-                required(),
-                email("Email"),
-                this.customValidate.bind(this)) })
-          .addLookupField("departmentId", this.getDepartmentById, { fieldName: "department" })
-          .bindTo(() => this.user);
     }
 
     customValidate<T>(v : T | undefined) : true | string[] {

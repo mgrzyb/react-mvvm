@@ -1,5 +1,4 @@
 import { Command, ICommand } from './Command';
-import { MouseEvent } from 'react';
 import { ContextualCommand } from './ContextualCommand';
 
 export * from './Command';
@@ -15,10 +14,10 @@ export function command<T, K = boolean>(execute: (e: K) => T, enabled?: () => K 
 
 export function bindToCommand(command: ICommand, callback?: (value: Promise<any>) => Promise<any>) {
   return {
-    onClick: (e: MouseEvent) => {
+    onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) : void => {
       e.preventDefault();
       e.stopPropagation();
-      return callback ? callback(command.execute()) : command.execute();
+      callback ? callback(command.execute()) : command.execute();
     },
     disabled: !command.isEnabled
   };
@@ -26,7 +25,7 @@ export function bindToCommand(command: ICommand, callback?: (value: Promise<any>
 
 export function bindToContextualCommand<T>(command: ContextualCommand<T>, context: T) {
   return {
-    onClick: (e: MouseEvent) => {
+    onClick: (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       return command.execute(context);
