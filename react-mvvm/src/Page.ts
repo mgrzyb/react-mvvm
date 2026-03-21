@@ -1,6 +1,6 @@
 import { computed, observable } from 'mobx';
 import { IRoutedPage } from './routing';
-import { ICancelableAction, runWithCancelableAction } from './CancelableAction';
+import { ICancelableAction, runWithCancelableAction } from './UITransaction';
 
 export interface IPage extends IRoutedPage {
   unload(): boolean;

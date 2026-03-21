@@ -15,7 +15,7 @@ class CommandDecorator implements ICommand {
     return this.command.isEnabled && !this.isRunning;
   }
   @observable
-  private _isRunning = false;
+  private accessor _isRunning = false;
   get isRunning() {
     return this.command.isRunning || this._isRunning;
   }
@@ -39,7 +39,7 @@ export class Command<T = any, K = any> {
     return (!this._enabledValueAccessor || !!this._enabledValueAccessor()) && !this._isRunning;
   }
 
-  @observable private _isRunning: boolean = false;
+  @observable private accessor _isRunning: boolean = false;
   @computed get isRunning() {
     return this._isRunning;
   }

@@ -38,7 +38,7 @@ class ProductDetailsPage implements IContent {
         this.product = new Product(swr(() => this.api.loadProduct(this._productId)))
 
         navigationEntry.onClosing(async closing => {
-            if (this.product.isDirty && !await this.navigationEntry.openModal(c => new ConfirmCloseDialog(c))){
+            if (this.product.isDirty && !await this.navigationEntry.showModal(c => new ConfirmCloseDialog(c))){
                 closing.cancel();
             }
         });
@@ -52,7 +52,7 @@ class ProductDetailsPage implements IContent {
     }
 
     async tryChangeProduct(productId: string): Promise<boolean> {
-        if (this.product.isDirty && !await this.navigationEntry.openModal(c => new ConfirmCloseDialog(c)))
+        if (this.product.isDirty && !await this.navigationEntry.showModal(c => new ConfirmCloseDialog(c)))
             return false;
         this._productId = productId;
         return true;

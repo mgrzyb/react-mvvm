@@ -1,0 +1,27 @@
+{
+  "name": "my-objects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "mobx": "^6.13.2",
+    "mobx-react-lite": "^4.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^16.14.15",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.2.2",
+
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

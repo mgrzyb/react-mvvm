@@ -13,7 +13,7 @@ export class ContextualCommand<TContext, TResult = any> {
     return this._isRunning;
   }
 
-  @observable private _isRunning: boolean = false;
+  @observable private accessor _isRunning: boolean = false;
 
   constructor(execute: ((context: TContext) => Promise<TResult>) | ((context: TContext) => TResult), canExecute?: (context: TContext) => boolean) {
     this._execute = isAction(execute) ? execute : action(execute);

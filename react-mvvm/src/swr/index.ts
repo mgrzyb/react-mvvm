@@ -6,7 +6,7 @@ export type SWR<T> = {
     readonly isLoaded: boolean
     readonly isStale: boolean
     readonly failedToLoad: boolean
-};
+} & PromiseLike<T>;
 
 export function swr<T>(load : () => Promise<T>) : SWR<T> {
     const swr : SWR<T> = new SWRImpl<T>(load);

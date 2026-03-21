@@ -1,6 +1,6 @@
 export type IDisposable = { dispose: () => Promise<void> | void };
 
-export default class Disposable implements IDisposable {
+export default class _Disposable implements IDisposable {
   private readonly disposers: (() => void | Promise<void>)[] = [];
 
   using(disposer: () => void): void;

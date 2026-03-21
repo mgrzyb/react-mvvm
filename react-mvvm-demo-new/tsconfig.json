@@ -1,11 +1,19 @@
 { 
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ES2018",
     "module": "commonjs",
-    "jsx": "react",
+    "jsx": "preserve",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": false,
     "strict": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "paths": {
+      "my-objects": ["./src/my-objects"],
+      "my-objects/*": ["./src/my-objects/*"],
+      "my-objects-antd": ["./src/my-objects-antd"],
+      "my-objects-antd/*": ["./src/my-objects-antd/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"]
 }

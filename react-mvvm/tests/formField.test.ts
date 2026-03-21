@@ -1,4 +1,4 @@
-import { FormField, FormValidationState } from "../src/forms";
+import { FormField, FormValidationState } from "../src";
 import { tick } from "./utils";
 
 test('Newly crested Field is pristine and pending validation', async () => {
